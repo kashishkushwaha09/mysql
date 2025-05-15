@@ -1,4 +1,18 @@
 const db=require('../utils/db-connection');
+// Retrieve all users from the database.
+const retrieveEntries=(req,res)=>{
+    const readQuery=`SELECT * FROM users`;
+    db.execute(readQuery,(err,results)=>{
+        if(err){
+        console.log(err.message);
+        res.status(500).send(err.message);
+        db.end();
+        return;
+    }
+     res.status(200).send(results);
+    })
+}
+// Add a new user.
 const addEntries=(req,res)=>{
 const {email,name}=req.body;
 const InsertQuery=`INSERT INTO users (name,email) VALUES (?,?)`;
@@ -64,4 +78,4 @@ const deleteEntry=(req,res)=>{
     })
 }
 
-module.exports={addEntries,updateEntries,deleteEntry};
+module.exports={retrieveEntries,addEntries,updateEntries,deleteEntry};
