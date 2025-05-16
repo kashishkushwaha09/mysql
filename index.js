@@ -4,6 +4,7 @@ const db=require('./utils/db-connection');
 const userRouter=require('./routes/usersRoutes');
 const busRouter=require('./routes/busesRoutes');
 const userModel=require('./models/userModel');
+const busModel=require('./models/busModel');
 app.use(express.json());
 app.use('/api/users',userRouter);
 app.use('/api/buses',busRouter);
