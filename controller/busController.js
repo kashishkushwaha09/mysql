@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
 const db=require('../utils/db-connection');
+const User = require('../models/userModel');
+const Booking=require('../models/bookingModel');
 const Bus=require('../models/busModel')
 // Retrieve all buses with more than the specified number of available seats.
 const retrieveEntries=async (req,res)=>{
@@ -35,5 +37,35 @@ const addEntries=async (req,res)=>{
     }
    
 }
+const getAllBookings=async (req,res)=>{
+    try {
+        console.log('getAllBookings called');
+        const {id}=req.params;
+        const bus=await Bus.findByPk(id);
+        if(!bus){
+            res.status(404).send('Bus not found');
+        }
+        const bookings=await Booking.findAll({
+             attributes: ['id', 'seatNumber'],
+            include:[
 
-module.exports={addEntries,retrieveEntries};
+                {
+                model:User,
+                attributes:['name','email']
+            }],
+            where:{
+                BusId:bus.id
+            }
+        });
+        if(!bookings){
+            res.status(404).send('Bookings not found');
+        }
+
+        res.status(200).send(bookings);
+    } catch (err) {
+            console.log(err);
+        res.status(500).send(err.message);
+    }
+};
+
+module.exports={addEntries,retrieveEntries,getAllBookings};
